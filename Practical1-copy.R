@@ -119,17 +119,17 @@ cat(formatted_section1)##Print out the corresponding text
 
 
 #9 control group simulation
-i2<-match (text,new_b) 
-count2<-tabulate(i2)
-freq2<-count2/sum(count2)
-section2 <- paste(sample(b,size=50,replace=TRUE,prob=freq2), collapse = ' ')  
-formatted_section2 <- format_sentence(section2)
-cat(formatted_section2)
+i2<-match (text,new_b)                              ##create a vector to hold the index of modified b matched to the punct_split text
+count2<-tabulate(i2)                                ##Count the number of occurrences of modified most common words
+freq2<-count2/sum(count2)                           ##calculate the occurrence frequency of modified most common words
+section2 <- paste(sample(b,size=50,replace=TRUE,prob=freq2), collapse = ' ')  ##Select most common words by frequency
+formatted_section2 <- format_sentence(section2)     ##use the function written in question 10 to remove " " before punctuation
+cat(formatted_section2)                             ##output the text
 
 
 #10 capitalize and format for punctuation
 capitalizing <- function(a, b) {
-  new_b <- character(length(b))##Creat an new empty character vector with same length as b
+  new_b <- character(length(b))                    ##Creat an new empty character vector with same length as b
   for (i in seq_along(b)) {
     word <- b[i]
     lower_word <- tolower(word)##Convert the word to lowercase.
@@ -140,14 +140,15 @@ capitalizing <- function(a, b) {
     
     #compare upper_count and lower_count
     if (upper_count > lower_count) {
-      new_b[i] <- paste0(toupper(substring(lower_word, 1, 1)), substring(lower_word, 2))##If upper_count > lower_count, the first letter of the word will be capitalized
+          ##If upper_count > lower_count, the first letter of the word will be capitalized
+      new_b[i] <- paste0(toupper(substring(lower_word, 1, 1)), substring(lower_word, 2))
     } else {
       new_b[i] <- lower_word##Otherwise, the first letter of the word will be lowercase
     }
   }
   return(new_b)  
 }
-format_sentence <- function(sentence) {  ##no space before punctuation
+format_sentence <- function(sentence) {            ##no space before punctuation
   sentence <- gsub(" +([,.:;!?])", "\\1", sentence)
   return(sentence)
 }
