@@ -58,64 +58,64 @@ b <- dd$word[common_words_indices]
 
 
 ## !!!!!! Note that some functions in questions 7-9 require 
-## !!!!!! running the function from question 10 first.
+## !!!!!! Running the function from question 10 first
 
 
 
 
-#7 prepare matrix for model
+#7 Prepare matrix for model
 #(a)
-new_b<-capitalizing(text,b)
-iii<-match(text,new_b)
+new_b<-capitalizing(text,b)##Capitalize the first letter of each character.
+iii<-match(text,new_b)##Find the index of elements in 'text' within 'new_b'
 #(b) 
 mlag <- 4 #start from 4
 n <- length(text)
-
+##Matrix M of common word token sequences
 M<- matrix(NA,nrow=n-mlag,ncol=mlag+1)
 for (i in 1:(mlag+1)){
   M[,i]<-iii[i:(n-mlag-1+i)] 
 }
 
 
-#8 simulation by small language model
+#8 Simulation by small language model
 nw <-50
 model<-function(mlag,b,nw,M){
   set.seed(1)
-  first_word <- sample(b, 1)
-  firstword_index<-match(first_word,b)
-  ss1<-array(NA,nw)
+  first_word <- sample(b, 1)##Generate the first token
+  firstword_index<-match(first_word,b)##The first word's index in 'b'
+  ss1<-array(NA,nw)##Creat an empty array
   ss1[1]<-firstword_index
   for (i in 2:nw) { 
-    for (j in mlag:1) if (i>j) { 
+    for (j in mlag:1) if (i>j) {    ##Skip lags too long for current i
       context<-ss1[(i-j):(i-1)]
-      if (j==1){
+      if (j==1){    ##When j = 1, match the first word of each row
         rows<- which(M[,j]==context)
       }
-      else{
+      else{    ##Otherwise, match the j words of each row
         rows <- apply(M[, 1:j], 1, function(x) all(x == context))
       }
-      if (length(rows)!=0){
+      if (length(rows)!=0){    ##If the number of matching rows is not zero, select a non-NA from them as the predicted value
         all_tokens <- M[rows, j + 1]
-        treated_tokens <- all_tokens[!is.na(all_tokens)]
+        treated_tokens <- all_tokens[!is.na(all_tokens)]##Select elements that are not NA
         if (length(treated_tokens) > 0) {
           ss1[i]<- sample(treated_tokens, 1)
           break  
         }
         else {
-          ss1[i]<- sample(1:length(b), 1)
+          ss1[i]<- sample(1:length(b), 1)##If there are only NAs, randomly select a word
         }
       }
       else{
-        ss1[i]<- sample(1:length(b), 1)
+        ss1[i]<- sample(1:length(b), 1)##If the number of matching rows is zero, randomly select a word
       }
   }
   }
   return(ss1)
 }
 
-section1 <- paste(b[model(mlag, new_b, nw, M)], collapse = ' ')  
-formatted_section1 <- format_sentence(section1)
-cat(formatted_section1)
+section1 <- paste(b[model(mlag, new_b, nw, M)], collapse = ' ')##Simulation by small language model
+formatted_section1 <- format_sentence(section1)##Delete space before punctuation
+cat(formatted_section1)##Print out the corresponding text 
 
 
 #9 control group simulation
@@ -129,24 +129,31 @@ cat(formatted_section2)
 
 #10 capitalize and format for punctuation
 capitalizing <- function(a, b) {
-  new_b <- character(length(b))
+  new_b <- character(length(b))##Creat an new empty character vector with same length as b
   for (i in seq_along(b)) {
     word <- b[i]
-    lower_word <- tolower(word)  
+    lower_word <- tolower(word)##Convert the word to lowercase.
+    ##Count the number of times a word in vector a starts with an uppercase
     upper_count <- sum(grepl(paste0("^", toupper(substring(lower_word, 1, 1)), substring(lower_word, 2)), a))
+    ##Count the number of times a word in vector a starts with the lowercase
     lower_count <- sum(grepl(paste0("^", lower_word), a))
     
     #compare upper_count and lower_count
     if (upper_count > lower_count) {
-      new_b[i] <- paste0(toupper(substring(lower_word, 1, 1)), substring(lower_word, 2))  # 首字母大写
+      new_b[i] <- paste0(toupper(substring(lower_word, 1, 1)), substring(lower_word, 2))##If upper_count > lower_count, the first letter of the word will be capitalized
     } else {
-      new_b[i] <- lower_word
+      new_b[i] <- lower_word##Otherwise, the first letter of the word will be lowercase
     }
   }
   return(new_b)  
 }
-format_sentence <- function(sentence) {  # no space before punctuation
+format_sentence <- function(sentence) {  ##no space before punctuation
   sentence <- gsub(" +([,.:;!?])", "\\1", sentence)
   return(sentence)
 }
+
+
+# s2626102 40%
+# s2646482 30%
+# s2752993 30%
 
