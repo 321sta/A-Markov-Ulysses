@@ -11,7 +11,6 @@ a <- scan("4300-0.txt",what="character",skip=73,nlines=32858-73,
           fileEncoding="UTF-8")
 a <- gsub("_(","",a,fixed=TRUE) ## remove "_("
 
-
 #4 treat punctuation just like words
 split_punct <- function(text1,punc) {
   pp<-grep(punc,text1,fixed=TRUE)
