@@ -155,7 +155,7 @@ format_sentence <- function(sentence) {                              ##no space 
 }
 
 
-# s2626102 40%
-# s2646482 30%
-# s2752993 30%
+# s2626102 Jingwen Jiang  40%      Write the main content of the code.
+# s2646482 Chengpeng Dai  30%      Discuss, modify, and refine the code. Write comments.
+# s2752993 Ziyi Ye        30%      Discuss, modify, and refine the code. Write comments.
 
